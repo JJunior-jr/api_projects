@@ -14,14 +14,22 @@ lista_end = []
 # 2: Usar o "request" em uma variável com o metodo ".get" e dois parametros, a "url" e o "timeout"
 # que aguarda até 3s para obter o resultado do "request.get()", caso precisase de autenticação
 # teria que colocar mais parametros como o token de acesso.
+# 3:crio uma variavel para pegar o objeto "req" que é fruto de um request e uso um metodo que é o 'json'
+# 4: como o json é tipo um dicionario eu consulto o objeto "endereço" e pela chave
 
 
 for cep in lista_ceps:
 
     url = 'https://viacep.com.br/ws/{}/json/'.format(cep)  # 1
 
-    req = requests.get(url, timeout=3)
+    req = requests.get(url, timeout=3)  # 2
 
-    endereco = req.json()
+    endereco = req.json()  # 3
 
-    print(endereco)
+    lista_end.append([endereco['cep'], endereco['logradouro'],
+                     endereco['uf'], endereco['bairro']])  # 4
+
+
+for item in lista_end:
+
+    print(item)
