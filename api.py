@@ -8,6 +8,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 
 lista_ceps = ['01022000', '01310200', '04029200']
@@ -34,19 +35,21 @@ for cep in lista_ceps:
 
     endereco = req.json()  # 3
 
+    timestamp = datetime.now()
+
     lista_end.append([endereco['cep'],
                       endereco['logradouro'],
                      endereco['uf'],
-                      endereco['bairro']])  # 4
+                      endereco['bairro'], timestamp])  # 4
 
 
 df_enderecos = pd.DataFrame(
-    lista_end, columns=['cep', 'logradouro', 'uf', 'bairro'])  # 6
+    lista_end, columns=['cep', 'logradouro', 'uf', 'bairro', 'captured_at'])  # 6
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>AULA 2<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>AULA 2<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-#1 Conexão de url com o banco de dados 
-#2 O objeto 'create_engine' para a partir da url ele criar a conexão 
+# 1 Conexão de url com o banco de dados
+# 2 O objeto 'create_engine' para a partir da url ele criar a conexão
 load_dotenv()
 
 db_host = os.getenv('DB_HOST')
@@ -56,8 +59,9 @@ db_name = os.getenv('DB_NAME')
 db_port = os.getenv('DB_PORT')
 
 # db_connection= 'mysql+pymysql://user:password@host:port/database'
-db_connection = f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}' #1
-db_connection = create_engine(db_connection) #2
+# 1
+db_connection = f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
+db_connection = create_engine(db_connection)  # 2
 df_enderecos.to_sql(con=db_connection, name='enderecos',
                     if_exists='append', index=False)
 
